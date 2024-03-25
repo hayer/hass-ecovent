@@ -265,6 +265,9 @@ class EcoVentFan(FanEntity):
         self._pwd_size = 0
         self._password = password
 
+        # Default to unknown type
+        self._unit_type = self.unit_types[0x9999]
+
         # HA attribute
         self._attr_preset_modes = [PRESET_MODE_ON]
         self._state = self.states[0]
