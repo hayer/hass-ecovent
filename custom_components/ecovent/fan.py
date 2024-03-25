@@ -265,8 +265,15 @@ class EcoVentFan(FanEntity):
         self._pwd_size = 0
         self._password = password
 
-        # Default to unknown type
+        # Try to set some sane default values
         self._unit_type = self.unit_types[0x9999]
+        self._airflow = 0
+        self._humidity = 0
+        self._humidity_status = 0
+        self._humidity_treshold = ""
+        self._filter_replacement_status = ""
+        self._filter_timer_countdown = "0d 0h 0m"
+        self._machine_hours = "0d 0h 0m"
 
         # HA attribute
         self._attr_preset_modes = [PRESET_MODE_ON]
