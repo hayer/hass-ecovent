@@ -362,6 +362,8 @@ class EcoVentFan(FanEntity):
                     f"An error occurred while establishing the ecovent IP '{str(host)}' - a device ID is not found. Try restarting HA or check your configuration."
                 )
                 raise e
+        
+        self.update()
 
         # Set HA unique_id
         self._attr_unique_id = self._id
@@ -540,7 +542,7 @@ class EcoVentFan(FanEntity):
             self.socket.connect((self._host, self._port))
             return self.socket
         except self.socket.timeout as err:
-            print ( "Connection timeout: " + self._host + " " + str(err) )
+            LOG.error( "Connection timeout: " + self._host + " " + str(err) )
             return None
 
     def str2hex(self,str_msg):
@@ -593,7 +595,7 @@ class EcoVentFan(FanEntity):
             response = self.socket.sendall( bytes.fromhex(payload))
             return response
         except self.socket.timeout as err:
-            print ( "Connection timeout: " + self._host + " " + str(err) )
+            LOG.error( "Connection timeout: " + self._host + " " + str(err) )
             return None
 
     def receive(self):
@@ -601,7 +603,7 @@ class EcoVentFan(FanEntity):
             response = self.socket.recv(4096)
             return response
         except socket.timeout as err:
-            print ( "Connection timeout: " + self._host + " " + str(err) )
+            LOG.error( "Connection timeout: " + self._host + " " + str(err) )
             return None
 
     def do_func (self, func, param, value="" ):
@@ -718,13 +720,13 @@ class EcoVentFan(FanEntity):
         for p in payload:
             if parameter and p == 0xff:
                 ext_function = 0xff
-                # print ( "def ext:" + hex(0xff) )
+                LOG.debug( "def ext:" + hex(0xff) )
             elif parameter and p == 0xfe:
                 ext_function = 0xfe
-                # print ( "def ext:" + hex(0xfe) )
+                LOG.debug( "def ext:" + hex(0xfe) )
             elif parameter and p == 0xfd:
                 ext_function = 0xfd
-                # print ( "dev ext:" + hex(0xfd) )
+                LOG.debug( "dev ext:" + hex(0xfd) )
             else:
                 if ext_function == 0xff:
                     high_byte_value = p
@@ -736,7 +738,7 @@ class EcoVentFan(FanEntity):
                     None
                 else:
                     if ( parameter == 1 ):
-                        # print ("appending: " + hex(high_byte_value))
+                        LOG.debug("appending: " + hex(high_byte_value))
                         response.append(high_byte_value)
                         parameter = 0
                     else:
