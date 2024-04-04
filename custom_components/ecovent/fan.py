@@ -595,7 +595,7 @@ class EcoVentFan(FanEntity):
             response = self.socket.sendall( bytes.fromhex(payload))
             return response
         except self.socket.timeout as err:
-            LOG.error( "Connection timeout: " + self._host + " " + str(err) )
+            LOG.error("Connection timeout: %s:%s %s", self._host, self._port, str(err))
             return None
 
     def receive(self):
@@ -603,7 +603,7 @@ class EcoVentFan(FanEntity):
             response = self.socket.recv(4096)
             return response
         except socket.timeout as err:
-            LOG.error( "Connection timeout: " + self._host + " " + str(err) )
+            LOG.error("Connection timeout: %s:%s %s", self._host, self._port, str(err))
             return None
 
     def do_func (self, func, param, value="" ):
