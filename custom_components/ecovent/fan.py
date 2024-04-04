@@ -366,7 +366,9 @@ class EcoVentFan(FanEntity):
         # Set HA unique_id
         self._attr_unique_id = self._id
 
-    # HA Specifics    
+        LOG.info("Created EvoVent fan controller '%s'", self._host)
+
+    # HA Specifics ---------------
     async def async_added_to_hass(self) -> None:
         """Once entity has been added to HASS, subscribe to state changes."""
         await super().async_added_to_hass()
@@ -498,7 +500,7 @@ class EcoVentFan(FanEntity):
     def supported_features(self) -> int:
         return FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
 
-    # EcoVent
+    # EcoVent ------------------------------------------------------------
     def init_device (self):
         if self._id == "DEFAULT_DEVICEID":
             self.get_param( 'device_search' )
@@ -648,7 +650,11 @@ class EcoVentFan(FanEntity):
         idx = self.get_params_index (param)
         if idx !=  None:
                 self.do_func( self.func['read'], hex(idx).replace("0x","").zfill(4) )
-            
+    
+    # HA Specific
+    def turn_on_ventilation(self):
+        self.set_state_on()
+
     def set_state_on(self):
         request = "0001";
         value = "01" ;
@@ -1165,7 +1171,10 @@ class EcoVentFan(FanEntity):
     @unit_type.setter
     def unit_type(self, input):
         val = int (input, 16 )
-        self._unit_type = self.unit_types[val]        
+        if val in self.unit_types:
+            self._unit_type = self.unit_types[val]
+        else:
+            self._unit_type = self.unit_types[0x9999]
 
     @property
     def night_mode_timer (self):
