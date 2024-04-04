@@ -749,7 +749,13 @@ class EcoVentFan(FanEntity):
                 parameter = 1
                 value_counter = 1
                 high_byte_value = 0
-                setattr ( self, self.params[int(response[:2].hex(),16)][0], response[2:].hex())
+                param_idx = int(response[:2].hex(),16)
+                state_idx = response[2:].hex()
+                
+                LOG.debug('parameter index: %s', param_idx)
+                LOG.debug('state index: %s', state_idx)
+
+                setattr (self, self.params[param_idx][0], state_idx)
                 response = bytearray()
 
     @property
