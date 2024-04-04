@@ -368,7 +368,7 @@ class EcoVentFan(FanEntity):
         # Set HA unique_id
         self._attr_unique_id = self._id
 
-        LOG.info("Created EvoVent fan controller '%s'", self._host)
+        LOG.info("Created EvoVent fan controller @ %s:%s (%s)", self._host, self._port, self._id)
 
     # HA Specifics ---------------
     async def async_added_to_hass(self) -> None:
@@ -542,7 +542,7 @@ class EcoVentFan(FanEntity):
             self.socket.connect((self._host, self._port))
             return self.socket
         except self.socket.timeout as err:
-            LOG.error( "Connection timeout: " + self._host + " " + str(err) )
+            LOG.error("Connection timeout: %s:%s %s", self._host, self._port, str(err))
             return None
 
     def str2hex(self,str_msg):
